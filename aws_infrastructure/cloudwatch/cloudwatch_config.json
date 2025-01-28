@@ -1,0 +1,6 @@
+{
+    "logGroupName": "/ecs/drm-game-comparison",
+    "logStreamName": "webapp-logs",
+    "region": "us-west-2"
+  }
+  

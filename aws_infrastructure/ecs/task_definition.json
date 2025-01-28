@@ -1,0 +1,19 @@
+{
+    "family": "drm-game-comparison",
+    "containerDefinitions": [
+      {
+        "name": "drm-game-comparison-app",
+        "image": "<your-docker-image>",
+        "cpu": 512,
+        "memory": 1024,
+        "essential": true,
+        "portMappings": [
+          {
+            "containerPort": 8000,
+            "hostPort": 8000
+          }
+        ]
+      }
+    ]
+  }
+  

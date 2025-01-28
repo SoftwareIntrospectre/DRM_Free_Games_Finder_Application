@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ app_name }} - {{ app_version }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>{{ app_name }}</h1>
+        <p>Version: {{ app_version }}</p>
+        
+        <div class="alert alert-info">
+            <strong>Welcome to the DRM-Free Game Comparison Tool!</strong><br>
+            This tool allows you to compare games available on Steam and check if they have a DRM-free version on GOG.
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <form action="{{ url_for('search_game') }}" method="get">
+                    <div class="form-group">
+                        <label for="game_name">Search for a game:</label>
+                        <input type="text" class="form-control" id="game_name" name="game_name" placeholder="Enter a game name">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </div>
+        </div>
+        
+        <hr>
+        
+        <h2>Popular Games with DRM-Free Options</h2>
+        <ul>
+            <li>Game A - Available on Steam and GOG</li>
+            <li>Game B - Available only on GOG</li>
+            <li>Game C - Available only on Steam</li>
+        </ul>
+
+        <footer class="mt-5">
+            <p>Powered by {{ app_name }} - &copy; 2025</p>
+        </footer>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
