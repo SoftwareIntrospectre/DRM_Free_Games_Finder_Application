@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workbook xmlns="http://www.tableausoftware.com/xml/2018/03">
+    <connection class="snowflake">
+        <connection-prompt name="Snowflake Connection" dbname="your_snowflake_db" server="your_snowflake_server" warehouse="your_warehouse" username="your_username" password="your_password"/>
+    </connection>
+    
+    <datasource name="Steam and GOG Game Data">
+        <relation table="game_data">
+            <column name="game_id" type="string"/>
+            <column name="title" type="string"/>
+            <column name="platform" type="string"/>
+            <column name="price" type="double"/>
+            <column name="is_drm_free" type="string"/>
+            <column name="release_date" type="date"/>
+            <column name="game_status" type="string"/>
+        </relation>
+    </datasource>
+    
+    <worksheet name="Game Comparison">
+        <view>
+            <view-summary>
+                <name>Game Comparison Dashboard</name>
+            </view-summary>
+            <sheet>
+                <sheet-name>Game Comparison Overview</sheet-name>
+                <sheet-type>bar_chart</sheet-type>
+                <columns>
+                    <column name="platform" />
+                    <column name="game_status" />
+                    <column name="count" />
+                </columns>
+                <rows>
+                    <row>
+                        <measure name="count" aggregation="count" />
+                        <dimension name="platform" />
+                        <dimension name="game_status" />
+                    </row>
+                </rows>
+                <filters>
+                    <filter name="game_status" filter-type="multi-select">
+                        <value>Exclusive on Steam</value>
+                        <value>Exclusive on GOG</value>
+                        <value>Available on both platforms</value>
+                    </filter>
+                </filters>
+            </sheet>
+        </view>
+    </worksheet>
+    
+    <dashboard name="Game Availability Dashboard">
+        <view>
+            <view-summary>
+                <name>Steam vs GOG Game Availability</name>
+            </view-summary>
+            <layout>
+                <layout-element name="Game Comparison" position="top-left" />
+                <layout-element name="Game Count Statistics" position="bottom-right" />
+            </layout>
+        </view>
+    </dashboard>
+
+    <story>
+        <story-point name="Overview">
+            <worksheet name="Game Comparison Overview"/>
+        </story-point>
+    </story>
+</workbook>

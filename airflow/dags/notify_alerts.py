@@ -1,46 +1,71 @@
+import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from airflow import DAG
-from airflow.operators.python import PythonOperator
-from airflow.providers.email.operators.email import EmailOperator
-from datetime import datetime, timedelta
+from airflow.operators.python_operator import PythonOperator
+from airflow.utils.dates import days_ago
+from airflow.utils.dates import timedelta
 
-# Default arguments for DAG
 default_args = {
     'owner': 'airflow',
-    'retries': 1,
+    'retries': 3,
     'retry_delay': timedelta(minutes=5),
-    'email_on_failure': True,
-    'email_on_retry': False,
-    'email': ['your-email@example.com'],  # Email to notify in case of failure
 }
 
-# Function to send a custom alert
-def send_alert():
-    print("Sending an alert! An error occurred in the pipeline.")
+def send_failure_email(context):
+    """
+    Sends an email notification on task failure using environment variables for sensitive info.
+    """
+    subject = f"Airflow Task Failed: {context['task_instance'].task_id}"
+    body = f"Task {context['task_instance'].task_id} failed due to: {context['exception']}\n\nDetails:\n{context['task_instance'].xcom_pull()}"
+    
+    # Fetch environment variables for email credentials
+    from_email = os.getenv('FROM_EMAIL')
+    to_email = os.getenv('TO_EMAIL')
+    password = os.getenv('EMAIL_PASSWORD')  # Ensure this variable is set securely in your environment
 
-# Define the DAG
-with DAG(
+    # Check if the environment variables are set
+    if not from_email or not to_email or not password:
+        raise ValueError("Missing required environment variables for email configuration.")
+
+    # Email server settings (example using Gmail)
+    smtp_server = os.getenv('SMTP_SERVER', 'smtp.gmail.com')  # Default to Gmail if not specified
+    smtp_port = int(os.getenv('SMTP_PORT', 587))  # Default to 587 if not specified
+
+    # Create the email message
+    msg = MIMEMultipart()
+    msg['From'] = from_email
+    msg['To'] = to_email
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain'))
+
+    try:
+        # Set up the server
+        with smtplib.SMTP(smtp_server, smtp_port) as server:
+            server.starttls()  # Start TLS encryption
+            server.login(from_email, password)  # Log in with the credentials
+            text = msg.as_string()
+            server.sendmail(from_email, to_email, text)  # Send the email
+        print(f"Alert email sent to {to_email}")
+    except Exception as e:
+        print(f"Failed to send alert email: {e}")
+
+# Instantiate the DAG
+dag = DAG(
     'notify_alerts',
     default_args=default_args,
-    description='Send notifications if a task fails',
-    schedule_interval=None,  # Manually triggered for failures
-    start_date=datetime(2025, 1, 29),
+    description='Notify stakeholders about task failures',
+    schedule_interval=None,  # This DAG doesn't need to run on a schedule
+    start_date=days_ago(1),
     catchup=False,
-) as dag:
+)
 
-    # Task 1: Run alert function if a task fails
-    alert_task = PythonOperator(
-        task_id='send_alert',
-        python_callable=send_alert,
-    )
-
-    # Task 2: Send email notification in case of failure
-    failure_notification = EmailOperator(
-        task_id='send_failure_email',
-        to='your-email@example.com',
-        subject='Airflow Task Failed',
-        html_content="""<h3>Dear User,</h3>
-                        <p>The task in your Airflow pipeline has failed. Please check the logs for more details.</p>""",
-    )
-
-    # Task dependency: If alert task fails, send email notification
-    alert_task >> failure_notification
+# Task to send failure email
+notify_failure_task = PythonOperator(
+    task_id='notify_failure_email',
+    python_callable=send_failure_email,
+    provide_context=True,
+    trigger_rule='one_failed',
+    dag=dag
+)

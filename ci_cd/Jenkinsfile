@@ -1,0 +1,90 @@
+pipeline {
+    agent any
+
+    environment {
+        // Define environment variables here (e.g., Docker image name, repository)
+        DOCKER_IMAGE = 'your-docker-image-name'
+        DOCKER_REGISTRY = 'your-docker-registry-url'
+        AWS_ACCOUNT_ID = 'your-aws-account-id'
+        AWS_REGION = 'us-west-2'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout the code from the repository
+                git 'https://github.com/your-username/drm-free-game-comparison.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image
+                    sh 'docker build -t $DOCKER_IMAGE .'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                // Run tests (you can add specific tests like pytest for Python here)
+                sh 'pytest --maxfail=1 --disable-warnings -q'
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // Log in to Docker registry (e.g., Docker Hub or AWS ECR)
+                    sh 'docker login -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY'
+
+                    // Tag the Docker image for deployment
+                    sh "docker tag $DOCKER_IMAGE $DOCKER_REGISTRY/$DOCKER_IMAGE:latest"
+                    
+                    // Push the image to the Docker registry (Docker Hub or AWS ECR)
+                    sh "docker push $DOCKER_REGISTRY/$DOCKER_IMAGE:latest"
+                }
+            }
+        }
+
+        stage('Deploy to AWS ECS') {
+            steps {
+                script {
+                    // Deploy the Docker image to AWS ECS (using AWS CLI or other automation)
+                    sh '''
+                    aws ecs update-service \
+                        --cluster drm-game-comparison-cluster \
+                        --service drm-game-comparison-service \
+                        --task-definition $DOCKER_IMAGE \
+                        --region $AWS_REGION
+                    '''
+                }
+            }
+        }
+
+        stage('Cleanup') {
+            steps {
+                // Optionally, remove local Docker images to save space
+                sh 'docker system prune -f'
+            }
+        }
+    }
+
+    post {
+        always {
+            // This block will always run after the pipeline completes, regardless of success or failure.
+            echo 'Cleaning up and finishing the process.'
+        }
+
+        success {
+            // Notify about the successful pipeline execution
+            echo 'Pipeline executed successfully!'
+        }
+
+        failure {
+            // Notify if the pipeline failed
+            echo 'Pipeline failed. Please check the logs for details.'
+        }
+    }
+}

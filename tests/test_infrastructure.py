@@ -1,9 +1,18 @@
-import pytest
-import json
-import boto3
+import unittest
+from aws_infrastructure.cloudwatch.cloudwatch_config import CloudWatchMonitor
+from aws_infrastructure.terraform.main import TerraformProvisioner
 
-def test_cloudwatch_logs():
-    client = boto3.client('logs', region_name='us-west-2')
-    log_group = "/ecs/drm-game-comparison"
-    logs = client.describe_log_streams(logGroupName=log_group)
-    assert len(logs['logStreams']) > 0
+class TestInfrastructure(unittest.TestCase):
+
+    def test_cloudwatch_config(self):
+        monitor = CloudWatchMonitor()
+        success = monitor.configure()
+        self.assertTrue(success)  # Assuming configure returns True if configuration succeeds
+
+    def test_terraform_provisioning(self):
+        provisioner = TerraformProvisioner()
+        result = provisioner.apply_changes()
+        self.assertTrue(result)  # Assuming apply_changes returns True if successful
+
+if __name__ == "__main__":
+    unittest.main()
