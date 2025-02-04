@@ -1,8 +1,10 @@
 drm-free-game-comparison-tool/
 ├── Dockerfile                    # Docker configuration to containerize the app
+├── docker-compose.yml            # Docker Compose configuration to set up multi-container environment
 ├── README.md                     # Project overview and setup instructions
 ├── requirements.txt              # Python dependencies for the app
 ├── .gitignore                    # Git ignore configuration for untracked files
+├── .env                          # Environment variables for configuration (not committed to source control)
 ├── airflow/
 │   ├── dags/                     # Apache Airflow DAGs for task orchestration
 │   │   ├── extract_transform_load.py  # Main ETL DAG file for Airflow

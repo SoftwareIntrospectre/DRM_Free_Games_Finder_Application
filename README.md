@@ -1,3 +1,4 @@
+```markdown
 # DRM-Free Game Comparison Tool
 
 ## Overview
@@ -10,69 +11,13 @@ This project includes:
 - A visualization dashboard using Tableau to provide insights into the game data.
 - Cloud infrastructure and deployment using AWS, including ECS, CloudWatch, and Snowflake.
 
-## Key Features
+## Key Technologies
 
-- **Game Search**: Search for games on Steam and check if a DRM-free version is available on GOG.
-- **Game Comparison**: Compare games across platforms (Steam vs GOG) and check which are DRM-free.
-- **Interactive Dashboard**: Visualize game availability statistics through an interactive Tableau dashboard.
-- **Real-Time Data**: Data is updated daily via an automated pipeline to ensure up-to-date information.
-- **Cloud Infrastructure**: Hosted on AWS for scalability and reliability.
-- **Automated Pipeline**: Data extraction, transformation, and loading are automated with Apache Airflow and Apache Spark.
-
-## Architecture & Technologies
-
-### Data Pipeline
-- **Apache Spark**: Distributed data processing for cleaning and transforming game data.
-- **Apache Airflow**: Orchestrates the ETL tasks to ensure data is fetched, cleaned, and loaded automatically.
-
-### Data Storage
-- **Snowflake**: A cloud-based data warehouse for storing and querying the processed game data.
-
-### Web Application
-- **FastAPI**: A fast web framework for building the REST API that powers the application, enabling users to query and compare games.
-
-### Visualization
-- **Tableau**: A dashboard tool for generating interactive charts and visualizations from the game data stored in Snowflake.
-
-### Cloud Infrastructure
-- **AWS**: Hosting the application on AWS for scalability and reliability.
-- **Docker**: The app and its dependencies are containerized to ensure consistency between development and production environments.
-- **AWS ECS (Elastic Container Service)**: Manages the deployment and scaling of Docker containers.
-- **AWS CloudWatch**: Monitors and logs the application for troubleshooting and performance insights.
-
-## How to Use the Tool
-
-### Access the Web Application
-- Navigate to the web application URL (hosted on AWS).
-- Use the search bar to search for a game by title, which will show whether it’s available on Steam and if a DRM-free version is available on GOG.
-
-### View the Tableau Dashboard
-- The Tableau dashboard provides interactive visualizations such as:
-  - Games exclusive to Steam
-  - Games exclusive to GOG
-  - Games with DRM-free versions on GOG
-
-### Filter and Sort
-- Filter games based on criteria like platform, DRM-free status, release date, and price.
-- Sort games by attributes such as price, title, or release date.
-
-## How It Works (Workflow)
-
-1. **Data Extraction**:
-   - Game data is fetched from the Steam and GOG APIs. Steam provides metadata, and GOG provides DRM-free status.
-   - This data is fetched daily using Apache Airflow to ensure it is up-to-date.
-
-2. **Data Processing**:
-   - Apache Spark processes the data by applying transformations, cleaning, removing duplicates, handling missing values, and ensuring consistent formatting.
-
-3. **Data Storage**:
-   - Cleaned data is loaded into Snowflake for fast querying and analysis.
-
-4. **Data Access**:
-   - Users interact with the FastAPI web application to query and display game data.
-
-5. **Visualization**:
-   - Tableau queries Snowflake for live data and generates interactive visualizations showing game availability statistics.
+- **FastAPI**: Used to build the backend API.
+- **Apache Airflow**: For orchestrating ETL tasks (data fetching, cleaning, and loading).
+- **Snowflake**: Cloud-based data warehouse for storing processed data.
+- **Docker**: Containerizes the application and dependencies.
+- **AWS ECS & CloudWatch**: Deployment and monitoring.
 
 ## How to Run the Project Locally
 
@@ -89,50 +34,56 @@ This project includes:
    ```bash
    git clone https://github.com/your-username/drm-free-game-comparison
    cd drm-free-game-comparison
+   ```
 
-    Build the Docker Container:
+2. **Create the `.env` File**:
+   Create a `.env` file in the root of the project with the following content:
+   ```bash
+   FROM_EMAIL=your-email@example.com
+   TO_EMAIL=recipient@example.com
+   EMAIL_PASSWORD=your-email-password
+   SMTP_SERVER=smtp.gmail.com
+   SMTP_PORT=587
+   FERNET_KEY=your-fernet-key
+   ```
 
-docker build -t drm-game-comparison .
+3. **Omitting Environment Variables from Source Control**:
+   To ensure that sensitive data (like email credentials and API keys) are not tracked in version control, make sure to add the `.env` file to your `.gitignore`.  
+   Simply add the following line to your `.gitignore` file:
+   ```
+   .env
+   ```
 
-Run the Docker Container:
+4. **Build the Docker Containers**:
+   In the project directory, run the following command to build the containers:
+   ```bash
+   docker-compose build
+   ```
 
-    docker run -p 5000:5000 drm-game-comparison
+5. **Start the Services**:
+   Once the build is complete, run the containers:
+   ```bash
+   docker-compose up
+   ```
 
-    This will start the FastAPI application locally at localhost:5000.
+   This will start:
+   - The FastAPI app on `http://localhost:5000`
+   - The Airflow Web UI on `http://localhost:8080`
+   - MySQL and Snowflake services (for backend integration)
 
-    Access the Application: Open a web browser and navigate to http://localhost:5000 to interact with the web application.
+### Accessing the Application
 
-Deployment on AWS
+- **FastAPI**: Open a web browser and go to `http://localhost:5000` to interact with the FastAPI web application.
+- **Airflow**: Open `http://localhost:8080` to access the Apache Airflow Web UI for monitoring ETL pipelines.
 
-The project is deployed on AWS and includes:
+### Running Tests
 
-    Docker container deployment using AWS ECS.
-    Daily data fetching, processing, and loading using Apache Airflow and Spark.
-    Data stored in Snowflake for querying.
-    CloudWatch monitoring for application performance and logging.
+Unit tests are located in the `tests/` directory. To run them locally:
 
-Testing
-
-Unit tests for the project are located in the tests/ directory. They include tests for:
-
-    API routes and endpoints (test_api.py)
-    Data fetching and processing (test_data_pipeline.py)
-    Data validation checks (test_data_validation.py)
-    Snowflake integration (test_snowflake.py)
-    Infrastructure tests (test_infrastructure.py)
-
-To run the tests locally, use:
-
+```bash
 pytest
+```
 
-Acknowledgments
-
-    Apache Airflow: For orchestrating the ETL pipeline.
-    Apache Spark: For distributed data processing.
-    Snowflake: For scalable cloud data storage and querying.
-    FastAPI: For building the web application and API.
-    Tableau: For data visualization and dashboarding.
-
-License
+## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.

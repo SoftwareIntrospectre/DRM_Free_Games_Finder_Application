@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # FastAPI application
+  fastapi:
+    build: .
+    container_name: fastapi_app
+    environment:
+      - FROM_EMAIL=${FROM_EMAIL}
+      - TO_EMAIL=${TO_EMAIL}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+      - SMTP_SERVER=${SMTP_SERVER}
+      - SMTP_PORT=${SMTP_PORT}
+      - FERNET_KEY=${FERNET_KEY}
+    ports:
+      - "5000:5000"  # Expose FastAPI on port 5000
+    volumes:
+      - .:/app  # Bind mount the code to allow live code changes
+    networks:
+      - app-network
+
+  # Apache Airflow Webserver and Scheduler
+  airflow:
+    image: apache/airflow:2.5.1
+    container_name: airflow
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=mysql://airflow:airflow@mysql/airflow
+      - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    ports:
+      - "8080:8080"  # Expose Airflow UI on port 8080
+    volumes:
+      - ./airflow:/opt/airflow
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+  # MySQL database (used by Airflow for metadata storage)
+  mysql:
+    image: mysql:5.7
+    container_name: mysql_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_DATABASE=drm_free_games_db
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+
+  # Snowflake (if using Snowflake and interacting with it in your DAG)
+  snowflake:
+    image: snowflake/snowflake-connector-python:latest
+    container_name: snowflake_container
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
