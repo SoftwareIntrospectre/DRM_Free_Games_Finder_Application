@@ -7,7 +7,8 @@ The DRM-Free Game Comparison Tool allows users to check which games available on
 also have a DRM-free version available on GOG. 
 
 It provides users with a simple way to compare games across platforms, 
-displaying statistics on which games are exclusive to Steam, exclusive to GOG, or have DRM-free options available on GOG.
+displaying statistics on which games are exclusive to Steam, exclusive to GOG, 
+or have DRM-free options available on GOG.
 
 This project includes:
 - A data pipeline for automated data extraction, transformation, and loading (ETL).
@@ -54,7 +55,7 @@ This project includes:
 3. **Omitting Environment Variables from Source Control**:
    To ensure that sensitive data (like email credentials and API keys) 
    are not tracked in version control, make sure to add the `.env` file to your `.gitignore`.  
-   
+
    Simply add the following line to your `.gitignore` file:
    ```
    .env
