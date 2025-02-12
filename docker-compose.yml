@@ -25,7 +25,7 @@ services:
     container_name: airflow
     environment:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=mysql://airflow:airflow@mysql/airflow
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=mysql://airflow:airflow@mysql/airflow  # Airflow using MySQL for metadata
       - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
     ports:
@@ -34,6 +34,7 @@ services:
       - ./airflow:/opt/airflow
     depends_on:
       - mysql
+      - snowflake  # Ensure Snowflake is available for integration
     networks:
       - app-network
 
@@ -43,13 +44,13 @@ services:
     container_name: mysql_db
     environment:
       - MYSQL_ROOT_PASSWORD=root_password
-      - MYSQL_DATABASE=drm_free_games_db
+      - MYSQL_DATABASE=airflow
     ports:
       - "3306:3306"
     networks:
       - app-network
 
-  # Snowflake (if using Snowflake and interacting with it in your DAG)
+  # Snowflake (Snowflake connector for Python)
   snowflake:
     image: snowflake/snowflake-connector-python:latest
     container_name: snowflake_container

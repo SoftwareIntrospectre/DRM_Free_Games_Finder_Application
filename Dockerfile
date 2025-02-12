@@ -2,10 +2,7 @@
 FROM ubuntu:22.04
 
 # Set environment variables to ensure consistent behavior across Docker containers
-
-#Allows Docker to write output directly to terminal
 ENV PYTHONUNBUFFERED=1 
-
 ENV LOGGING_LEVEL=INFO
 ENV FASTAPI_HOST=0.0.0.0
 ENV FASTAPI_PORT=5000
