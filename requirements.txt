@@ -1,29 +1,36 @@
-# pip install -r requirements.txt
+# Core dependencies for FastAPI and Uvicorn
+fastapi==0.95.0
+uvicorn==0.22.0
 
+# Dependencies for Data Pipeline (e.g., PySpark, Requests)
+pyspark==3.3.1         # PySpark for data processing
+requests==2.28.1       # HTTP requests for fetching data (e.g., from APIs)
+pandas==1.5.3         # For data manipulation
+dask==2023.2.0        # For parallel computing and handling large datasets
 
-# Core dependencies
-requests==2.28.1
-numpy==1.24.0
-pandas==1.5.3
-pyarrow==11.0.0
-pyspark==3.3.2
+# Airflow dependencies (to run Airflow in Docker container)
+apache-airflow==2.5.0                       # Apache Airflow
+apache-airflow-providers-snowflake==2.2.0    # Airflow Snowflake integration
 
-# Snowflake dependencies
-snowflake-connector-python==2.7.5
-snowflake-sqlalchemy==1.3.0
+# Snowflake integration
+snowflake-connector-python==2.7.3  # Snowflake Python connector
+snowflake-sqlalchemy==1.2.4         # Snowflake integration with SQLAlchemy
+
+# AWS SDK
+boto3==1.26.11       # AWS SDK for Python
 
 # Testing dependencies
-pytest==7.2.2
-pytest-mock==3.10.0
-unittest2==1.1.0
+pytest==7.2.2        # Testing framework
+pytest-asyncio==0.19.0  # For async testing support
+httpx==0.23.0        # HTTP requests for testing FastAPI endpoints
 
-# Mocking dependencies
-mock==4.0.3
+# Docker & AWS integrations (for ECS, CloudWatch, etc.)
+docker==5.0.0            # Docker SDK for Python
+terraform==1.3.6         # Terraform automation (for infrastructure)
 
-# Other dependencies required for Airflow (if used)
-apache-airflow==2.6.0
-apache-airflow-providers-snowflake==3.0.1
-apache-airflow-providers-http==3.0.1
+# Tableau integrations (if you're using Tableau’s Python API for automation)
+tableau-api-lib==0.11.0  # Tableau API integration for automation tasks
 
-# Optional (but might be used for integration and Snowflake-related functionality)
-sqlalchemy==2.0.9
+# Java dependencies for Spark (using OpenJDK 11 for compatibility with PySpark)
+# These won't go directly in requirements.txt, but will need to be installed in the Dockerfile
+# For PySpark to work, Java must be installed on the system running Spark (i.e., in Dockerfile).
