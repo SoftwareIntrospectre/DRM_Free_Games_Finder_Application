@@ -22,11 +22,12 @@ drm-free-game-comparison-tool/
 │   ├── snowflake_integration.py  # Snowflake integration script (NEW FILE)
 │   └── data_validation.py        # Data validation and checks script
 ├── app/
-│   ├── main.py                   # Main FastAPI application code
+│   ├── main.py                   # Main FastAPI application code (updated to include new game comparison query)
 │   ├── models/                   # Models for request/response (API) and database schema
 │   │   ├── game.py               # Game model to interact with the database
 │   ├── api/                      # API routes for FastAPI
 │   │   ├── game.py               # Endpoints to query game data (Steam, GOG comparison)
+│   │   ├── game_comparison.py    # New file for game comparison endpoints (JOIN query for Steam/GOG data)
 │   ├── config/                   # Configuration files for FastAPI app
 │   │   ├── settings.py           # Configuration settings for FastAPI
 │   └── templates/                # HTML templates (if needed)
