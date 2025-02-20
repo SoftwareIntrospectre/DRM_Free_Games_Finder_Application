@@ -27,33 +27,43 @@ def validate_steam_data(steam_data):
     if 'steam_game_id' not in steam_data or not isinstance(steam_data['steam_game_id'], int):
         logger.error(f"Missing or invalid 'steam_game_id' in data: {steam_data}")
         return False
+    
     if 'steam_game_name' not in steam_data or not isinstance(steam_data['steam_game_name'], str) or not steam_data['steam_game_name'].strip():
         logger.error(f"Missing or invalid 'steam_game_name' in data: {steam_data}")
         return False
+    
     if 'price' not in steam_data or not isinstance(steam_data['price'], (float, int)) or steam_data['price'] < 0:
         logger.error(f"Missing or invalid 'price' in data: {steam_data}")
         return False
+    
     if 'release_date' not in steam_data or not validate_date(steam_data['release_date']):
         logger.error(f"Missing or invalid 'release_date' in data: {steam_data}")
         return False
+    
     if 'developer' not in steam_data or not isinstance(steam_data['developer'], str) or not steam_data['developer'].strip():
         logger.error(f"Missing or invalid 'developer' in data: {steam_data}")
         return False
+    
     if 'publisher' not in steam_data or not isinstance(steam_data['publisher'], str) or not steam_data['publisher'].strip():
         logger.error(f"Missing or invalid 'publisher' in data: {steam_data}")
         return False
+    
     if 'genre1_id' not in steam_data or not isinstance(steam_data['genre1_id'], int):
         logger.error(f"Missing or invalid 'genre1_id' in data: {steam_data}")
         return False
+    
     if 'genre1_name' not in steam_data or not isinstance(steam_data['genre1_name'], str) or not steam_data['genre1_name'].strip():
         logger.error(f"Missing or invalid 'genre1_name' in data: {steam_data}")
         return False
+    
     if 'on_windows_pc_platform' not in steam_data or not isinstance(steam_data['on_windows_pc_platform'], bool):
         logger.error(f"Missing or invalid 'on_windows_pc_platform' in data: {steam_data}")
         return False
+    
     if 'on_apple_mac_platform' not in steam_data or not isinstance(steam_data['on_apple_mac_platform'], bool):
         logger.error(f"Missing or invalid 'on_apple_mac_platform' in data: {steam_data}")
         return False
+    
     if 'on_linux_platform' not in steam_data or not isinstance(steam_data['on_linux_platform'], bool):
         logger.error(f"Missing or invalid 'on_linux_platform' in data: {steam_data}")
         return False
@@ -74,21 +84,27 @@ def validate_gog_data(gog_data):
     if 'id' not in gog_data or not isinstance(gog_data['id'], int):
         logger.error(f"Missing or invalid 'id' in data: {gog_data}")
         return False
+    
     if 'title' not in gog_data or not isinstance(gog_data['title'], str) or not gog_data['title'].strip():
         logger.error(f"Missing or invalid 'title' in data: {gog_data}")
         return False
+    
     if 'FinalPrice' not in gog_data or not isinstance(gog_data['FinalPrice'], (float, int)) or gog_data['FinalPrice'] < 0:
         logger.error(f"Missing or invalid 'FinalPrice' in data: {gog_data}")
         return False
+    
     if 'releaseDate' not in gog_data or not validate_date(gog_data['releaseDate']):
         logger.error(f"Missing or invalid 'releaseDate' in data: {gog_data}")
         return False
+    
     if 'Developer' not in gog_data or not isinstance(gog_data['Developer'], str) or not gog_data['Developer'].strip():
         logger.error(f"Missing or invalid 'Developer' in data: {gog_data}")
         return False
+    
     if 'Publisher' not in gog_data or not isinstance(gog_data['Publisher'], str) or not gog_data['Publisher'].strip():
         logger.error(f"Missing or invalid 'Publisher' in data: {gog_data}")
         return False
+    
     if 'OperatingSystem1' not in gog_data or not isinstance(gog_data['OperatingSystem1'], str) or not gog_data['OperatingSystem1'].strip():
         logger.error(f"Missing or invalid 'OperatingSystem1' in data: {gog_data}")
         return False

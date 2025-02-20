@@ -84,3 +84,6 @@ dist/
 # Ignore Snowflake credentials if stored in separate files
 snowflake_config.json
 snowflake_config.yaml
+
+# Ignore config.py if it contains sensitive info (email credentials, etc.)
+app/config/config.py

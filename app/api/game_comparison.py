@@ -26,6 +26,7 @@ def get_game_comparison(game_title: str, developer: str, publisher: str, game_re
         AND s.developer = g.developer
         AND s.publisher = g.publisher
         AND s.game_release_date = g.game_release_date
+        
         WHERE s.game_title = '{game_title}'
         AND s.developer = '{developer}'
         AND s.publisher = '{publisher}'
